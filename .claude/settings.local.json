@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(wsl -e bash -c:*)"
+    ]
+  }
+}
