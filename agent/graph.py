@@ -1,4 +1,5 @@
 from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.base import BaseCheckpointSaver
 
 from agent.state import AgentState
 from agent.nodes import router_node, chat_node, search_node, pdf_node
@@ -9,36 +10,25 @@ def route_decision(state: AgentState) -> str:
     return state.get("next_action", "chat")
 
 
-def build_graph() -> StateGraph:
+def build_graph(checkpointer: BaseCheckpointSaver | None = None) -> StateGraph:
     graph = StateGraph(AgentState)
 
-    # --- Register nodes ---
     graph.add_node("router", router_node)
-    graph.add_node("chat", chat_node)
+    graph.add_node("chat",   chat_node)
     graph.add_node("search", search_node)
-    graph.add_node("pdf", pdf_node)
+    graph.add_node("pdf",    pdf_node)
 
-    # --- Entry point ---
     graph.set_entry_point("router")
 
-    # --- Conditional edges from router ---
     graph.add_conditional_edges(
         "router",
         route_decision,
-        {
-            "chat":   "chat",
-            "search": "search",
-            "pdf":    "pdf",
-        },
+        {"chat": "chat", "search": "search", "pdf": "pdf"},
     )
 
-    # --- All action nodes go to END after responding ---
     graph.add_edge("chat",   END)
     graph.add_edge("search", END)
     graph.add_edge("pdf",    END)
 
-    return graph.compile()
-
-
-# Compiled graph — imported by main.py
-agent = build_graph()
+    # Attach checkpointer if provided — enables persistent memory per thread_id
+    return graph.compile(checkpointer=checkpointer)

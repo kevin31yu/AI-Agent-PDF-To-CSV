@@ -4,7 +4,9 @@
       "Bash(pip:*)",
       "Bash(pip3:*)",
       "Bash(wsl -e bash -c:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(python:*)",
+      "Bash(python -c:*)"
     ]
   }
 }
