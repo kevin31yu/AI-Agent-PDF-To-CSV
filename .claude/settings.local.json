@@ -3,7 +3,8 @@
     "allow": [
       "Bash(pip:*)",
       "Bash(pip3:*)",
-      "Bash(wsl -e bash -c:*)"
+      "Bash(wsl -e bash -c:*)",
+      "Bash(source:*)"
     ]
   }
 }
